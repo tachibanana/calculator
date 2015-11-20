@@ -39,6 +39,7 @@ class Services {
 				}
 			}
 		}
+		response.MultiplyResponse.MultiplyResult
 	}
 	
 	def doDiv(num1 , num2){
@@ -51,5 +52,6 @@ class Services {
 				}
 			}
 		}
+		response.DivideResponse.DivideResult
 	}
 }

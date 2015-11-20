@@ -3,27 +3,30 @@ package com.calc
 import groovy.swing.SwingBuilder
 
 import java.awt.*
+import java.awt.event.ActionListener
 
 import javax.swing.BoxLayout
 import javax.swing.JButton
 import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.JTextField
+import javax.swing.SwingConstants
 
 class GUI extends SwingBuilder{
 	
-	def frame
-	def contentPane
-	def firstLayer
-	def secondLayer
-	def thirdLayer
-	def forthLayer
-	def txField
-	def btn7 , btn8 , btn9 , btnDiv
-	def btn4 , btn5 , btn6 , btnMul
-	def btn1 , btn2 , btn3 , btnMin
-	def btn0 , btnClr , btnEql , btnAdd
-	def operator , num1 , num2
+	JFrame frame
+	JPanel contentPane
+	JPanel firstLayer
+	JPanel secondLayer
+	JPanel thirdLayer
+	JPanel forthLayer
+	JTextField txField
+	JButton btn7 , btn8 , btn9 , btnDiv
+	JButton btn4 , btn5 , btn6 , btnMul
+	JButton btn1 , btn2 , btn3 , btnMin
+	JButton btn0 , btnClr , btnEql , btnAdd
+	String operator
+	def tempNum
 	
 	def edt(){
 	
@@ -47,7 +50,8 @@ class GUI extends SwingBuilder{
 		frame.contentPane = contentPane
 
 		//first layer
-		txField = new JTextField(columns:20)
+		txField = new JTextField(text:'0',columns:20,editable:false)
+		txField.setHorizontalAlignment(SwingConstants.RIGHT)
 		btn7 = new JButton(text:'7')
 		btn8 = new JButton(text:'8')
 		btn9 = new JButton(text:'9')
@@ -80,10 +84,6 @@ class GUI extends SwingBuilder{
 		thirdLayer.add(btn3)
 		thirdLayer.add(btnMin)
 		
-		contentPane.add(txField)
-		contentPane.add(firstLayer)
-		contentPane.add(secondLayer)
-		contentPane.add(thirdLayer)
 		
 		//forth layer
 		btn0 = new JButton(text:'0')
@@ -102,9 +102,40 @@ class GUI extends SwingBuilder{
 		contentPane.add(thirdLayer)
 		contentPane.add(forthLayer)
 		
+		//event
+		btn1.addActionListener(clickBtn as ActionListener)
+		btn2.addActionListener(clickBtn as ActionListener)
+		btn3.addActionListener(clickBtn as ActionListener)
+		btn4.addActionListener(clickBtn as ActionListener)
+		btn5.addActionListener(clickBtn as ActionListener)
+		btn6.addActionListener(clickBtn as ActionListener)
+		btn7.addActionListener(clickBtn as ActionListener)
+		btn8.addActionListener(clickBtn as ActionListener)
+		btn9.addActionListener(clickBtn as ActionListener)
+		btn0.addActionListener(clickBtn as ActionListener)
+		btnAdd.addActionListener(clickOperator as ActionListener)
+		btnMin.addActionListener(clickOperator as ActionListener)
+		btnMul.addActionListener(clickOperator as ActionListener)
+		btnDiv.addActionListener(clickOperator as ActionListener)
+		btnEql.addActionListener(clickEqual as ActionListener)
+		btnClr.addActionListener(clickClear as ActionListener)
+		
 		frame.setResizable(false)
 		frame.show()
 		
 	}
 	
+	def clickBtn = {if(txField.text.equals('0') || tempNum != 0) txField.text = it.getActionCommand() else txField.text += it.getActionCommand()} 
+	
+	def clickClear = {txField.text = "0"; tempNum = 0}
+	def clickOperator = {tempNum = Integer.parseInt(txField.text); txField.text = '0'; operator = it.getActionCommand()}
+	def clickEqual = {
+		Services s = new Services()
+		
+		if(operator.equals("+")) {tempNum = s.doAdd(tempNum , Integer.parseInt(txField.text)); txField.text = tempNum}
+		if(operator.equals("-")) {tempNum = s.doMin(tempNum , Integer.parseInt(txField.text)); txField.text = tempNum}
+		if(operator.equals("X")) {tempNum = s.doMul(tempNum, Integer.parseInt(txField.text)); txField.text = tempNum}
+		if(operator.equals("/")) {tempNum = s.doDiv(tempNum , Integer.parseInt(txField.text)); txField.text = tempNum}
+		
+		}
 }
